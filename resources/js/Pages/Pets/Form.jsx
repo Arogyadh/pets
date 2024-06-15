@@ -7,22 +7,23 @@ import SelectInput from "@/Components/SelectInput";
 import TextAreaInput from "@/Components/TextAreaInput";
 import TextInput from "@/Components/TextInput";
 import { Head, useForm } from "@inertiajs/react";
+import { router } from "@inertiajs/react";
 
 export default function CreatePet({ auth, categories, pet = null }) {
-    const { data, setData, post, put, processing, errors, reset } = useForm({
-        name: pet ? pet.name : "",
-        breed: pet ? pet.breed : "",
-        age: pet ? pet.age : "",
-        category_id: pet ? pet.category_id : "",
-        description: pet ? pet.description : "",
-        image: null,
-    });
+    const { data, setData, post, put, processing, errors, reset, progress } =
+        useForm({
+            _method: pet ? "PUT" : "POST",
+            name: pet ? pet.name : "",
+            breed: pet ? pet.breed : "",
+            age: pet ? pet.age : "",
+            category_id: pet ? pet.category_id : "",
+            description: pet ? pet.description : "",
+            image: null,
+        });
 
     const [imagePreview, setImagePreview] = useState(null);
 
     useEffect(() => {
-        console.log(categories);
-        console.log(pet);
         return () => {
             reset();
         };
@@ -46,28 +47,12 @@ export default function CreatePet({ auth, categories, pet = null }) {
     const submit = (e) => {
         e.preventDefault();
 
-        const formData = new FormData();
-        for (let key in data) {
-            formData.append(key, data[key]);
-        }
-
-        if (pet) {
-            put(route("pets.update", pet.id), formData, {
-                forceFormData: true,
-                onSuccess: () => {
-                    reset();
-                },
-            });
-        } else {
-            post(route("pets.store"), formData, {
-                forceFormData: true,
-                onSuccess: () => {
-                    reset();
-                },
-            });
-        }
+        post(pet ? route("pets.update", pet.id) : route("pets.store"), {
+            forceFormData: true,
+            preserveState: true,
+            preserveScroll: true,
+        });
     };
-
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Create Pet" />
@@ -75,7 +60,6 @@ export default function CreatePet({ auth, categories, pet = null }) {
                 <form
                     onSubmit={submit}
                     className="flex flex-col w-full max-w-xl"
-                    encType="multipart/form-data"
                 >
                     <div>
                         <InputLabel htmlFor="name" value="Name" />
@@ -196,6 +180,11 @@ export default function CreatePet({ auth, categories, pet = null }) {
 
                         <InputError message={errors.image} className="mt-2" />
                     </div>
+                    {progress && (
+                        <progress value={progress.percentage} max="100">
+                            {progress.percentage}%
+                        </progress>
+                    )}
 
                     <div className="flex items-center justify-end mt-4">
                         <PrimaryButton className="ms-4" disabled={processing}>

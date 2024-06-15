@@ -57,22 +57,26 @@ class PetController extends Controller
 
     public function update(Request $request, Pet $pet)
     {
+        
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'breed' => 'required|string|max:255',
             'age' => 'required|integer|min:0',
             'category_id' => 'integer|required|exists:categories,id',
             'description' => 'required|string|max:500',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image',
         ]);
         if ($request->hasFile('image')) {
-            // Delete old image
             if ($pet->image) {
                 Storage::disk('s3')->delete(parse_url($pet->image, PHP_URL_PATH));
             }
-            $imagePath = $request->file('image')->store('public/pets');
+            $imagePath = $request->file('image')->store('pets', 's3');
             $validatedData['image'] = Storage::disk('s3')->url($imagePath);
+        } else {
+            // Ensure the 'image' field is not overwritten with null
+            unset($validatedData['image']);
         }
+
         $pet->update($validatedData);
         return redirect()->route('pets.index');
     }
