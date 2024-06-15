@@ -16,14 +16,22 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $user = User::create([
-            'first_name' => 'admin',
-            'last_name' => 'admin' ,
-            'username'=> 'admin',
-            'email'=>'admin@admin.com',
-            'password'=> Hash::make('password'),
-          ]);
+            'username' => 'admin',
+            'email' => 'admin@admin.com',
+            'password' => Hash::make('password'),
+        ]);
 
         $role = Role::where('name', 'admin')->get();
         $user->roles()->sync($role);
+
+        $user = User::create([
+            'username' => 'arogya',
+            'email' => 'arogya@user.com',
+            'password' => Hash::make('password'),
+        ]);
+
+        $role2 = Role::where('name', 'user')->get();
+        $user->roles()->sync($role2);
+
     }
 }

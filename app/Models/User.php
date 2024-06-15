@@ -55,7 +55,13 @@ class User extends Authenticatable
     return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id');
   }
 
-  public function pets(){
+  public function pets()
+  {
     return $this->hasMany(Pet::class);
+  }
+
+  public function hasRole($role)
+  {
+    return $this->roles()->where('name', $role)->exists();
   }
 }

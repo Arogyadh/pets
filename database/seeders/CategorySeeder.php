@@ -6,23 +6,22 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-class RoleSeeder extends Seeder
+class CategorySeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        $roles = [
+        $category = [
             [
-                'name' => 'admin',
-                'description' => 'Admin Role',
+                'category_name' => 'Dog',
             ],
             [
-                'name' => 'user',
-                'description' => 'User Role',
-            ]
+                'category_name' => 'Cat',
+            ],
+
         ];
-        DB::table('roles')->insert($roles);
+        DB::table('categories')->insert($category);
     }
 }
