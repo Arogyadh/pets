@@ -35,7 +35,7 @@ class PetController extends Controller
             'image' => 'nullable|image',
         ]);
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('pets', 's3');
+            $imagePath = $request->file('image')->storePublicly('pets', 's3');
             $validatedData['image'] = Storage::disk('s3')->url($imagePath);
         }
         Pet::create($validatedData);
@@ -57,7 +57,7 @@ class PetController extends Controller
 
     public function update(Request $request, Pet $pet)
     {
-        
+
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'breed' => 'required|string|max:255',
@@ -70,7 +70,7 @@ class PetController extends Controller
             if ($pet->image) {
                 Storage::disk('s3')->delete(parse_url($pet->image, PHP_URL_PATH));
             }
-            $imagePath = $request->file('image')->store('pets', 's3');
+            $imagePath = $request->file('image')->storePublicly('pets', 's3');
             $validatedData['image'] = Storage::disk('s3')->url($imagePath);
         } else {
             // Ensure the 'image' field is not overwritten with null
