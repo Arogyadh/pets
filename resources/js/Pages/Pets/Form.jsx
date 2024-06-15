@@ -7,10 +7,9 @@ import SelectInput from "@/Components/SelectInput";
 import TextAreaInput from "@/Components/TextAreaInput";
 import TextInput from "@/Components/TextInput";
 import { Head, useForm } from "@inertiajs/react";
-import { router } from "@inertiajs/react";
 
 export default function CreatePet({ auth, categories, pet = null }) {
-    const { data, setData, post, put, processing, errors, reset, progress } =
+    const { data, setData, post, processing, errors, reset, progress } =
         useForm({
             _method: pet ? "PUT" : "POST",
             name: pet ? pet.name : "",

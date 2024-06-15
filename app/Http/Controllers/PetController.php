@@ -51,7 +51,7 @@ class PetController extends Controller
     public function edit($id)
     {
         $categories = Category::all();
-        $pet = Pet::findOrFail($id)::with('category')->first();
+        $pet = Pet::findOrFail($id);
         return Inertia::render('Pets/Form', ['pet' => $pet, 'categories' => $categories]);
     }
 
